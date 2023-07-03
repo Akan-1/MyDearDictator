@@ -2,6 +2,11 @@ using UnityEngine;
 
 public class DestroyTransition : MonoBehaviour
 {
-    private void Awake() => Invoke("DestroyImage", 1.5f);
+    [SerializeField] private GameObject obj;
+    private void Awake()
+    {
+        obj.SetActive(true);
+        Invoke("DestroyImage", 1.5f);
+    }
     private void DestroyImage() => Destroy(gameObject);
 }
