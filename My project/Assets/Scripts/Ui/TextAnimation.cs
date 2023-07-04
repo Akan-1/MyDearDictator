@@ -1,6 +1,7 @@
 using System.Collections;
 using TMPro;
 using UnityEngine;
+using UnityEngine.Events;
 
 public class TextAnimation : MonoBehaviour
 {
@@ -8,10 +9,12 @@ public class TextAnimation : MonoBehaviour
     [SerializeField] private float punctuationDelay;
 
     [TextArea(3, 10)]
-    [SerializeField] private string[] phrases; // Массив фраз для отображения
-    private int currentPhraseIndex = 0; // Текущий индекс фразы
+    public string[] phrases; // Массив фраз для отображения
+    public int currentPhraseIndex = 0; // Текущий индекс фразы
     private string currentPhrase = ""; // Текущая отображаемая фраза
     private TextMeshProUGUI textMeshPro;
+
+    public UnityEvent EventAfterCompliting;
 
     private void Start()
     {
@@ -19,12 +22,12 @@ public class TextAnimation : MonoBehaviour
         ShowNextPhrase();
     }
 
-    private void ShowNextPhrase()
+    public void ShowNextPhrase()
     {
         if (currentPhraseIndex >= phrases.Length)
         {
-            Debug.Log("Фразы закончились");
-            return;
+            EventAfterCompliting.Invoke();
+            EventAfterCompliting = null;
         }
 
         currentPhrase = phrases[currentPhraseIndex];
@@ -32,7 +35,7 @@ public class TextAnimation : MonoBehaviour
         StartCoroutine(TypeText(currentPhrase));
     }
 
-    private IEnumerator TypeText(string phrase)
+    public IEnumerator TypeText(string phrase)
     {
         textMeshPro.text = "";
 
