@@ -1,18 +1,24 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Spawner : MonoBehaviour
 {
-    // Start is called before the first frame update
-    void Start()
+    public GameObject papers;
+
+    private void OnEnable()
     {
-        
+        Papers._onAccept += Spawn;
+        Papers._onReject += Spawn;
+    }
+    private void OnDisable()
+    {
+        Papers._onAccept += Spawn;
+        Papers._onReject += Spawn;
     }
 
-    // Update is called once per frame
-    void Update()
+    private void Spawn()
     {
-        
+        var spawnPoint = GameObject.FindWithTag("Papers");
+        GameObject obj = Instantiate(papers, transform.position, Quaternion.identity);
+        obj.gameObject.transform.SetParent(spawnPoint.transform);
     }
 }

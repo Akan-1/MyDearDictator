@@ -1,9 +1,9 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
+using RN = UnityEngine.Random;
 using TMPro;
 using UnityEngine.Events;
-using UnityEngine.UI;
+using System;
 
 public class Papers : MonoBehaviour
 {
@@ -23,6 +23,20 @@ public class Papers : MonoBehaviour
 
     [SerializeField] private UnityEvent EventAfterMarked;
 
+    public bool isHover = false;
+
+    public static Action _onReject;
+    public static Action _onAccept;
+
+    Vector3 desiredPosition;
+
+    public bool IsHover
+    {
+        get => isHover;
+        set => isHover = value;
+    }
+
+
     public bool IsCanMove
     {
         get => isCanMove;
@@ -37,24 +51,20 @@ public class Papers : MonoBehaviour
 
     private bool markIsSet = false;
 
-
-    private void Awake()
+    void Start()
     {
         moveToPoint = GameObject.FindWithTag("Point").transform;
         acceptPoint = GameObject.FindWithTag("Accept").transform;
         rejectPoint = GameObject.FindWithTag("Reject").transform;
-    }
-
-    void Start()
-    {
-        int randomIndex = Random.Range(0, textInPaper.Count);
+        desiredPosition = moveToPoint.position;
+        int randomIndex = RN.Range(0, textInPaper.Count);
         textMeshPro.text = textInPaper[randomIndex];
     }
 
     int count;
     void Update()
     {
-        Vector3 desiredPosition = moveToPoint.position;
+        desiredPosition = moveToPoint.position;
         Vector3 smoothedPosition = Vector3.Lerp(transform.position, desiredPosition, _smoothSpeed * Time.deltaTime);
         transform.position = smoothedPosition;
 
@@ -66,22 +76,24 @@ public class Papers : MonoBehaviour
 
         if (!markIsSet)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButtonDown(0) && IsHover)
             {
                 leftSpawnObject.SetActive(true);
-                moveToPoint.position = acceptPoint.position;
-                Invoke("DestroyPaper", 1.5f);
+                desiredPosition = acceptPoint.position;
+                Invoke("DestroyPaper", 1.1f);
                 markIsSet = true;
                 EventAfterMarked.Invoke();
+                _onAccept?.Invoke();
             }
 
-            if (Input.GetMouseButton(1))
+            if (Input.GetMouseButtonDown(1) && IsHover)
             {
                 rightSpawnObject.SetActive(true);
-                moveToPoint.position = rejectPoint.position;
-                Invoke("DestroyPaper", 1.5f);
+                desiredPosition = rejectPoint.position;
+                Invoke("DestroyPaper", 1.1f);
                 markIsSet = true;
                 EventAfterMarked.Invoke();
+                _onReject?.Invoke();
             }
         }
     }
@@ -94,5 +106,9 @@ public class Papers : MonoBehaviour
         oldPhrases.GetComponent<TextAnimation>().currentPhraseIndex = 0;
     }
 
-    private void DestroyPaper() => Destroy(gameObject);
+    private void DestroyPaper()
+    {
+        markIsSet = false;
+        Destroy(gameObject);
+    }
 }

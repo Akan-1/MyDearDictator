@@ -8,6 +8,7 @@ TagManager:
   - TextArea
   - Reject
   - Accept
+  - Papers
   layers:
   - Default
   - TransparentFX
