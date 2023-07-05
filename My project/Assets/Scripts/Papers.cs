@@ -62,6 +62,9 @@ public class Papers : MonoBehaviour
     }
 
     int count;
+
+    public AudioSource stampSound;
+
     void Update()
     {
         desiredPosition = moveToPoint.position;
@@ -78,9 +81,10 @@ public class Papers : MonoBehaviour
         {
             if (Input.GetMouseButtonDown(0) && IsHover)
             {
+                stampSound.Play();
                 leftSpawnObject.SetActive(true);
                 desiredPosition = acceptPoint.position;
-                Invoke("DestroyPaper", 1.1f);
+                Invoke("DestroyPaper", 1.01f);
                 markIsSet = true;
                 EventAfterMarked.Invoke();
                 _onAccept?.Invoke();
@@ -88,9 +92,10 @@ public class Papers : MonoBehaviour
 
             if (Input.GetMouseButtonDown(1) && IsHover)
             {
+                stampSound.Play();
                 rightSpawnObject.SetActive(true);
                 desiredPosition = rejectPoint.position;
-                Invoke("DestroyPaper", 1.1f);
+                Invoke("DestroyPaper", 1.01f);
                 markIsSet = true;
                 EventAfterMarked.Invoke();
                 _onReject?.Invoke();

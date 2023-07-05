@@ -15,7 +15,7 @@ public class TextAnimation : MonoBehaviour
     private TextMeshProUGUI textMeshPro;
 
     public UnityEvent EventAfterCompliting;
-
+    public AudioSource mumbling;
     private void Start()
     {
         textMeshPro = GetComponent<TextMeshProUGUI>();
@@ -43,7 +43,8 @@ public class TextAnimation : MonoBehaviour
         {
             char currentChar = phrase[i];
             textMeshPro.text += currentChar;
-
+            mumbling.Play();
+            mumbling.pitch = Random.Range(0.8f, 1.1f);
             // Проверка на специальные знаки
             if (IsPunctuation(currentChar))
             {
